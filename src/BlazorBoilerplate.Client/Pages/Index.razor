@@ -14,8 +14,10 @@
 </MatTable>
 
 @code {
-    [Parameter]
-    public List<BillingElement> billingElements { get; set; }
+    public List<BillingElement> billingElements { get; set; } = new List<BillingElement> {
+        new BillingElement { Date = DateTimeOffset.Now, Description = "Hello", UnixTimeStamp = "12345678"},
+        new BillingElement { Date = DateTimeOffset.Now.AddDays(-30), Description = "Hello2", UnixTimeStamp = "12456757"}
+    };
 
     private string GetId(BillingElement billingElement)
     {

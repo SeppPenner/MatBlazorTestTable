@@ -149,11 +149,11 @@ namespace BlazorBoilerplate.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            EmailTemplates.Initialize(env);
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-            }
+            //EmailTemplates.Initialize(env);
+            //using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            //}
 
             app.UseResponseCompression(); // This must be before the other Middleware if that manipulates Response
 
