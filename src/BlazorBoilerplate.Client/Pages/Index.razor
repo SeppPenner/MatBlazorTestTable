@@ -1,0 +1,33 @@
+﻿@page "/"
+
+<MatTable Items="@billingElements" class="mat-elevation-z5">
+    <MatTableHeader>
+        <th scope="col">Date</th>
+        <th scope="col">Billing</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Date</td>
+        <td>
+            <a href="#" id="@GetId(context)" class="btn btn-primary">@context.Description</a>
+        </td>
+    </MatTableRow>
+</MatTable>
+
+@code {
+    [Parameter]
+    public List<BillingElement> billingElements { get; set; }
+
+    private string GetId(BillingElement billingElement)
+    {
+        return $"billing_{billingElement.UnixTimeStamp}";
+    }
+
+    public class BillingElement
+    {
+        public DateTimeOffset Date { get; set; }
+
+        public string UnixTimeStamp { get; set; }
+
+        public string Description { get; set; }
+    }
+}

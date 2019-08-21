@@ -1,0 +1,97 @@
+﻿@page "/account/login"
+@layout LoginLayout
+@inject IUriHelper uriHelper
+@inject IdentityAuthenticationStateProvider authStateProvider
+@inject IMatToaster matToaster
+@inject AppState appState
+@*TODO: Add client-side validation*@
+
+<MatCard>
+    <div class="logo">
+        <img src="images/blazorboilerplate.svg" style="width:100px;" /><br />Blazor Boilerplate
+        <br />
+        <h4>Log In</h4>
+        User Name: <b>user</b> Password: <b>user123</b>
+    </div>
+
+    <fieldset>
+        <div class="form-group">
+            <MatTextField @bind-Value="@loginParameters.UserName" Label="User Name" Icon="person" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatTextField @bind-Value="@loginParameters.Password" Label="Password" Icon="lock_outline" IconTrailing="true" FullWidth="true" Required="true" Type="password"></MatTextField>
+        </div>
+        <div class="form-group">
+            <MatCheckbox @bind-Checked="@loginParameters.RememberMe" class="filled-in chk-col-blue">Remember Me</MatCheckbox>
+            <MatButton class="float-right" OnClick="@SubmitLogin" Raised="true">Login</MatButton>
+        </div>
+        <hr />
+        <NavLink href="account/register">
+            <h6 class="font-weight-normal text-center">Create account</h6>
+        </NavLink>
+    </fieldset>
+</MatCard>
+<MatAccordion>
+    <MatExpansionPanel @bind-Expanded="@forgotPasswordToggle">
+        <MatExpansionPanelSummary>
+            <MatExpansionPanelHeader>Forgot Password?</MatExpansionPanelHeader>
+            <MatExpansionPanelSubHeader></MatExpansionPanelSubHeader>
+        </MatExpansionPanelSummary>
+        <MatExpansionPanelDetails>
+            <div class="form-group">
+                <MatTextField @bind-Value="@forgotPasswordParameters.Email" Label="Email" Icon="mail_outline" IconTrailing="true" FullWidth="true" Required="true"></MatTextField>
+            </div>
+            <div class="form-group">
+                <MatButton class="float-right" OnClick="@ForgotPassword" Raised="true">Submit</MatButton>
+            </div>
+        </MatExpansionPanelDetails>
+    </MatExpansionPanel>
+</MatAccordion>
+
+@code {
+    bool forgotPasswordToggle = false;
+    LoginDto loginParameters { get; set; } = new LoginDto();
+    ForgotPasswordDto forgotPasswordParameters { get; set; } = new ForgotPasswordDto();
+
+    protected override void OnInitialized()
+    {
+        matToaster.Add("Password: user123", MatToastType.Info, "User Name: user");
+    }
+
+    async Task SubmitLogin()
+    {
+        try
+        {
+            var response = await authStateProvider.Login(loginParameters);
+            if (response.StatusCode == 200)
+            {
+                //Load User Profile
+                await appState.GetUserProfile();
+                uriHelper.NavigateTo("/dashboard");
+            }
+            else
+            {
+                matToaster.Add(response.Message, MatToastType.Danger, "Login Attempt Failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Login Attempt Failed");
+        }
+    }
+
+    async Task ForgotPassword()
+    {
+        try
+        {
+            await authStateProvider.ForgotPassword(forgotPasswordParameters);
+            matToaster.Add("Forgot Password Email Sent", MatToastType.Success);
+            forgotPasswordParameters.Email = "";
+            forgotPasswordToggle = false;
+        }
+        catch (Exception ex)
+        {
+            matToaster.Add(ex.Message, MatToastType.Danger, "Reset Password Attempt Failed");
+        }
+    }
+}
