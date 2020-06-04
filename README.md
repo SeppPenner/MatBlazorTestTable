@@ -14,4 +14,4 @@ The project was written in .NetCore 3.0-preview8 and uses the boilerplate from h
 Change history
 --------------
 
-* **Version 1.0.0.0 (2019-08-21)** : 1.0 release.
+See the [Changelog](https://github.com/SeppPenner/MatBlazorTestTable/blob/master/Changelog.md).
